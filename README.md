@@ -7,7 +7,7 @@ Protocols to emulate:
 - [ ] UART
 - [ ] CAN
 
-### Test
+## Test
 Compile the i2c testing branch executable then copy to beaglebone
 
 on your computer, cd into pod-embedded-beta then:
@@ -26,3 +26,21 @@ cd ~/pod-embedded-beta
 ./out/badgerloop
 ```
 You will see output in the terminal of the raspberry pi as hexadecimal values.
+
+### example:
+
+`main.cpp`
+```cpp
+...
+std::cout << morty.test_write_data(0xFA, 0xCE) << std::endl;
+...
+```
+
+```
+pi@raspberrypi:~ $ ./BTF/i2c.py 
+--------------------
+status: 18
+num bytes read: 2
+byte array: face
+--------------------
+```
