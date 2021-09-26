@@ -13,7 +13,7 @@ def i2c(id, tick):
       print("-"*20)
       print(f"status: {s}")
       print(f"num bytes read: {b}")
-      print(f"byte array: {d[:-1]}")
+      print(f"byte array: {d.hex()}")
       print("-"*20)
       
 
