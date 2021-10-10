@@ -8,3 +8,14 @@
 #   Output(): Write to registers
 
 # TODO Implement
+import Models.Register
+
+class Device:
+    # TODO Mock register file
+    reg_file = {
+        '0x0000' : 
+        '0x0001' :
+        '0x0002' :
+        '0x0003' : 
+
+    }
