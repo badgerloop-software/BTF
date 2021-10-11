@@ -12,10 +12,10 @@ import Models.Register
 
 class Device:
     # TODO Mock register file
-    reg_file = {
-        '0x0000' : 
-        '0x0001' :
-        '0x0002' :
-        '0x0003' : 
+    reg_file = dict ({
+        '0x0000' : ('00000000', '8'),
+        '0x0001' : ('00000001', '8'),
+        '0x0002' : ('00000011', '8'),
+        '0x0003' : ('00000100', '8')
 
-    }
+    })
