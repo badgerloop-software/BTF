@@ -1,18 +1,11 @@
 # I2c testing
 
-to make:
-```console
-make
-```
-
 to run:
 ```console
-sudo ./slave
+sudo pigpiod
+./i2c.py
 ```
-
-to stop the slave, pass any argument
-
-to close:
+to stop, pass any number of args:
 ```console
-sudo ./slave foo
+./i2c.py foo
 ```
