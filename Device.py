@@ -1,13 +1,6 @@
-# This file represents a device that the Raspberry Pi will simulate.
-# Instance Fields:
-#   SCP (serial communication protocol)
-#
-# Instance Functions:
-#   Input(): Read from registers
-#
-#   Output(): Write to registers
-
-# TODO Implement
+'''
+This file represents a device that the Raspberry Pi will simulate.
+'''
 import Models.Register
 
 class Device:
@@ -16,8 +9,8 @@ class Device:
     # Key:   hexadecimal address to register
     # Value: Tuple ([data], [register size in bits])    
     reg_file = dict ({
-        '0x0000' : ('00000000', '8'),
-        '0x0001' : ('00000001', '8'),
-        '0x0002' : ('00000011', '8'),
-        '0x0003' : ('00000100', '8')
+        0 : (0xFF, 8),
+        1 : (0x01, 8),
+        2 : (0x03, 8),
+        3 : (0x11, 8)
     })
