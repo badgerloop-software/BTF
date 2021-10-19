@@ -7,6 +7,8 @@ ser.baudrate = 115200
 if not ser.is_open:
     ser.open()
 
-ser.read(8)
+data = ser.read(8)
+print(data)
 
 ser.close()
+print(ser.is_open)
