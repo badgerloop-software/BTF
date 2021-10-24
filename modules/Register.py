@@ -9,12 +9,13 @@ class Register(object):
         self.can_write = can_write  # boolean for whether register can be written to
 
 
-    def write(new_data):
+    def write(self, new_data):
         """If the register is writeable, write new data."""
         if self.can_write:
             self.data = new_data
         else:
             raise IOError("Attempted write to readonly register")
+            
         
     def __str__(self):
         """Returns a string representation of this Register."""
