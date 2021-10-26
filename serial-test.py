@@ -1,18 +1,26 @@
 import serial
-
+    
 ser = serial.Serial()
 ser.port = "/dev/serial0"
 ser.baudrate = 9600
 
-if not ser.is_open:
-    ser.open()
-ser.reset_input_buffer()
+def openSerial():
+    if not ser.is_open:
+        ser.open()
+        return ser.is_open()
 
-data = ser.read(8)
-print(data)
+def readBytes():
+    ser.reset_input_buffer()
+    while ser.in_waiting == 0:
+        pass
+    data = ser.read(ser.in_waiting)
+    #print(data)
+    str = data.decode("utf-8")
+    #print(str)
+    return str
 
-str = data.decode("utf-8")
-print (str)
+def closeSerial():
+    ser.close()
+    return ser.is_open()
 
-ser.close()
-print(ser.is_open)
+#print(ser.is_open)
