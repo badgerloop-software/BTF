@@ -9,7 +9,7 @@ def openSerial():
         ser.open()
         return ser.is_open()
 
-def readBytes():
+def readBytes(ser):
     ser.reset_input_buffer()
     while ser.in_waiting == 0:
         pass

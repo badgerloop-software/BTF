@@ -3,6 +3,7 @@
 import time
 import pigpio
 import sys
+import serial
 
 I2C_ADDR=0x24
 pi = pigpio.pi()
@@ -31,7 +32,17 @@ if len(sys.argv) > 1:
 e = pi.event_callback(pigpio.EVENT_BSC, i2c)
 pi.bsc_i2c(I2C_ADDR) # Configure BSC as I2C slave
 
-time.sleep(600)
+s = serial.Serial()
+s.port = "/dev/serial0"
+s.baudrate = 9600
+s.open()
+assert(s.is_open())
+
+from serial-test import readBytes
+
+while readBytes(s) != "stop":
+    time.sleep(600)
+
 e.cancel()
 
 pi.bsc_i2c(0) # Disable BSC peripheral
