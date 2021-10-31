@@ -14,7 +14,7 @@ def i2c(id, tick):
    if b > 1:
        print("Received")
        register[d[0]] = bytearray([d[1]])
-       print(f"put {register[d[0]]} in reg")
+       #print(f"put {register[d[0]]} in reg")
 
    elif b == 1:
        print("Request to read")
