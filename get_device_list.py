@@ -6,24 +6,16 @@ def get_device_list():
         Returns: A list of mock devices to use for testing
     """
     # Create devices
-    device_0 = {
+    mcp23017 = {
         0x00: Register(0xFF, 8, True),
-        0x01: Register(0x52, 8, True),
-        0x02: Register(0x00, 8, False),     
-        0x03: Register(0x11, 8, False)
-    }
-
-    device_1 = {
-        0x00: Register(0xFF, 8, True),
-        0x01: Register(0x52, 8, True),
-        0x02: Register(0x00, 8, False),     
-        0x03: Register(0x11, 8, False)
+        0x01: Register(0xFF, 8, True),
+        0x12: Register(0x00, 8, True),     
+        0x13: Register(0x00, 8, True)
     }
 
     # device_list can be passed to wherever tests are ran
     device_list = {
-        "d0": device_0,
-        "d1": device_1
+        "mcp23017": mcp23017
     }
 
     # Debug print all registers accessible from the device_list
