@@ -7,7 +7,7 @@ ser.baudrate = 9600
 def openSerial():
     if not ser.is_open:
         ser.open()
-        return ser.is_open()
+        return ser.is_open
 
 def readBytes():
     ser.reset_input_buffer()
