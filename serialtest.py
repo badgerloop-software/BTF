@@ -17,7 +17,7 @@ def readBytes():
     #print(data)
     str = data.decode("utf-8")
     #print(str)
-    return str
+    return str.strip()
 
 def closeSerial():
     ser.close()
