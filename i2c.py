@@ -37,7 +37,6 @@ data = serialtest.readBytes()
 while data != "stop":
     time.sleep(1)
     data = serialtest.readBytes()
-    print(data)
 
 serialtest.closeSerial()
 
