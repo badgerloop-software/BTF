@@ -21,6 +21,6 @@ def readBytes():
 
 def closeSerial():
     ser.close()
-    return ser.is_open()
+    return ser.is_open
 
 #print(ser.is_open)
