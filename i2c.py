@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from os import read
 import time
 import pigpio
 import sys
@@ -32,8 +33,11 @@ if len(sys.argv) > 1:
 e = pi.event_callback(pigpio.EVENT_BSC, i2c)
 pi.bsc_i2c(I2C_ADDR) # Configure BSC as I2C slave
 serialtest.openSerial()
-while serialtest.readBytes() != "stop":
+data = serialtest.readBytes()
+while data != "stop":
     time.sleep(1)
+    data = serialtest.readBytes()
+    print(data)
 
 serialtest.closeSerial()
 
