@@ -14,13 +14,9 @@ def readBytes():
     while ser.in_waiting == 0:
         pass
     data = ser.read(ser.in_waiting)
-    #print(data)
     str = data.decode("utf-8")
-    #print(str)
     return str.strip()
 
 def closeSerial():
     ser.close()
     return ser.is_open
-
-#print(ser.is_open)
