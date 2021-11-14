@@ -2,26 +2,27 @@
 
 from os import read
 from modules.Register import Register
-from get_device_list import device_list
+from get_device_list import get_device_list 
 import time
 import pigpio
 import sys
 import serialtest
 
 I2C_ADDR=0x24
+device_list = get_device_list();
 pi = pigpio.pi()
-device = None
+device = device_list["mcp23017"]
 
 def i2c(id, tick):
    s, b, d = pi.bsc_i2c(I2C_ADDR)
    if b > 1:
-       print("Received")
        device[d[0]].write(d[1])
-       print("put {register[d[0]]} in reg")
+       print(f"\nput {hex(d[1])} in reg {hex(d[0])}\nnew value: {hex(device[d[0]].data)}\n")
 
    elif b == 1:
-       print("Request to read")
-       pi.bsc_i2c(I2C_ADDR, device[d[0]].data)
+       print(f"Request to read register {hex(d[0])}")
+       pi.bsc_i2c(I2C_ADDR, device[d[0]].data.to_bytes(1,byteorder='big', signed=False))
+       print(device[d[0]].data.to_bytes(1,byteorder='big', signed=False))
 
 if not pi.connected:
     exit()
