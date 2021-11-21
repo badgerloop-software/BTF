@@ -5,7 +5,7 @@ class Register(object):
     
     def __init__(self, data, size, can_write):
         self.data = data            # Hexadecimal value for register contents
-        self.size = size            # Size in bits of the register
+        self.size = size            # Amount of bits in the register
         self.can_write = can_write  # boolean for whether register can be written to
 
 
