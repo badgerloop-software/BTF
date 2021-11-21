@@ -16,15 +16,14 @@ def get_device_list():
     # device_list can be passed to wherever tests are ran
     device_list = {
         "mcp23017": mcp23017
-    }
-
-    # Debug print all registers accessible from the device_list
-    for device_name in device_list:
-        for reg_address in device_list[device_name]:
-            print(device_list[device_name][reg_address])
+    }  
     
     return device_list
 
 
 if __name__ == "__main__":
-    get_device_list()
+    device_list = get_device_list()
+    # Debug print all registers accessible from the device_list
+    for device_name in device_list:
+        for reg_address in device_list[device_name]:
+            print(device_list[device_name][reg_address])
