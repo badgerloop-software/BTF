@@ -7,6 +7,7 @@ import time
 import pigpio
 import sys
 import serialtest
+import gpio
 
 I2C_ADDR=0x24
 device_list = get_device_list();
