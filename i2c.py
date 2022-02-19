@@ -42,6 +42,7 @@ data = serialtest.readBytes()
 while data != "stop":
     if data in device_list:
         device = device_list[data]
+    # gpio tests
     time.sleep(1)
     data = serialtest.readBytes()
 
