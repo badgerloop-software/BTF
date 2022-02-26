@@ -43,6 +43,22 @@ while data != "stop":
     if data in device_list:
         device = device_list[data]
     # gpio tests
+    message = data.split()                      # split data into message components
+    if message[0] == "gpio":
+        level = int(message[2])                     # set level for tests
+        # Case 1: pin on BBB is set to level and is validated by pi
+        if message[1] == "r":
+            if gpio.pi_read(pi, level):         # call pi_read with pi and expected level
+                serialtest.writeString("y")     # output pass/fail message based off results
+            else:
+                serialtest.writeString("n")     # output pass/fail message based off results
+        # Case 2: pin on pi set to level and is validated by BBB
+        elif message[1] == "w":
+            gpio.pi_write(pi, level)            # call pi_write with pi and level to be set
+            if pi.read(16) == level:            # check if pi pin is set to correct levels
+                serialtest.writeString("y")     # output pass/fail message based off results
+            else:
+                serialtest.writeString("n")     # output pass/fail message based off results     
     time.sleep(1)
     data = serialtest.readBytes()
 
