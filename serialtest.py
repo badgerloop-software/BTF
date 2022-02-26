@@ -17,6 +17,10 @@ def readBytes():
     str = data.decode("utf-8")
     return str.strip()
 
+def writeString(str):
+    data = str.encode("utf-8")
+    ser.write(data)
+
 def closeSerial():
     ser.close()
     return ser.is_open
