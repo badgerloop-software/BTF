@@ -1,8 +1,8 @@
 import pigpio
 
 # Define pins
-pinR = 15
-pinW = 16
+pinR = 23
+pinW = 24
 
 ## Write functions to handle the following gpio cases
 
