@@ -16,8 +16,10 @@ device = device_list["ina3221"]
 def i2c(id, tick):
    s, b, d = pi.bsc_i2c(I2C_ADDR)
    if b > 1:
-       device[d[0]].write(d[1])
-       print(f"\nput {hex(d[1])} in reg {hex(d[0])}\nnew value: {hex(device[d[0]].data)}\n")
+       data = int.from_bytes(d[1:],"little")
+       register = d[0]
+       device[register].write(data)
+       print(f"\nput {hex(data)} in reg {hex(register)}\nnew value: {hex(device[register].data)}\n")
 
    elif b == 1:
        print(f"Request to read register {hex(d[0])}")

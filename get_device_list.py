@@ -23,6 +23,14 @@ def get_device_list():
         0x04: Register(0x0000, 16, False),
         0x05: Register(0x0000, 16, False),
         0x06: Register(0x0000, 16, False),
+        0x07: Register(0x0000, 16, True),
+        0x08: Register(0x0000, 16, True),
+        0x09: Register(0x0000, 16, True),
+        0x0A: Register(0x0000, 16, True),
+        0x0B: Register(0x0000, 16, True),
+        0x0C: Register(0x0000, 16, True),
+        0x10: Register(0x0000, 16, True),
+        0x11: Register(0x0000, 16, True),
         0xFE: Register(0x5449, 16, False),
         0xFF: Register(0x3220, 16, False)
     }
