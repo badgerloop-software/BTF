@@ -13,6 +13,5 @@ Additionally, you will need a testConfig file to indicate what mocks are needed.
 2. Activate the python environment (source </folder/you/specified/above>)
 3. Run the test script. You will need a [configuration file](#writing-the-configuration-file) to tell the runner what devices to mock and how. (python3 testRunner.py </path/to/testConfig/file>)
 
-
 ## Writing the Configuration File
 TBD
