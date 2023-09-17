@@ -7,11 +7,13 @@ def get_device_list():
     """
     # Create devices
     mockDevice = {
+        "i2c_addr": 0x10
         0x00: Register(0xFF, 8, False),
         0x01: Register(0x00, 8, True)
     }
 
     mcp23017 = {
+        "i2c_addr": 0x20
         0x00: Register(0xFF, 8, True),
         0x01: Register(0xFF, 8, True),
         0x12: Register(0x00, 8, True),     
@@ -19,6 +21,7 @@ def get_device_list():
     }
 
     tca6416 = {
+        "i2c_addr": 0x24
         0x00: Register(0xFF, 8, False),
         0x01: Register(0xFF, 8, False),
         0x02: Register(0xFF, 8, True),     
