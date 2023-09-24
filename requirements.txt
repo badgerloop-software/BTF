@@ -1,1 +1,3 @@
-pygpio
+pigpio
+pyserial
+time

@@ -17,7 +17,7 @@ def changeDevice(d):
     else:
         return False
 
-
+'''
 # function which allows the I2C lines to access the device
 def i2c(id, tick):
     # status: (not important)
@@ -34,3 +34,4 @@ def i2c(id, tick):
         print(f"Request to read register {hex(data[0])}")
         pi.bsc_i2c(I2C_ADDR, device[data[0]].data.to_bytes(1, byteorder='big', signed=False))
         print(device[data[0]].data.to_bytes(1, byteorder='big', signed=False))
+'''
