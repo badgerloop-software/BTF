@@ -21,21 +21,27 @@ I2C_ADDR = device["i2c_addr"]
 # function which allows the I2C lines to access the device
 def i2c(id, tick):
 	global pi
-	print("i2c method called")
 	# status: (not important)
 	# count: number of bytes of data arriving in I2C line
 	# data: bytes from I2C line
 	status, count, data = pi.bsc_i2c(I2C_ADDR)
+	print("i2c method called-------------------------")
+	for i in range (0, count):
+		print("data" + str(i) + ": " + f"{hex(data[i])}")
     
 	# write data to a register 
 	if count > 1:
-		print(f"\nput {hex(data[1])} in reg {hex(data[0])}\nnew value: {hex(device[data[0]].data)}\n")
+		print(f"put {hex(data[1])} in reg {hex(data[0])}\n")
 		device[data[0]].write(data[1])
+		print(f"new value: {hex(device[data[0]].data)}\n")
 	# read a register
 	elif count == 1:
-		print(f"Request to read register {hex(data[0])}")
-		pi.bsc_i2c(I2C_ADDR, device[data[0]].data.to_bytes(1, byteorder='big', signed=False))
-		print(device[data[0]].data.to_bytes(1, byteorder='big', signed=False))
+		if data[0] != 0xff:
+			print(f"Request to read register {hex(data[0])}")
+			pi.bsc_i2c(I2C_ADDR, device[data[0]].data.to_bytes(1, byteorder='big', signed=False))
+			#print(device[data[0]].data.to_bytes(1, byteorder='big', signed=False))
+			print(f"{hex(device[data[0]].data)}")
+			print("\n")
 
 # initialize Pi connection 
 pi = pigpio.pi() 
