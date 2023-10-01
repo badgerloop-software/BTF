@@ -7,7 +7,7 @@ def get_device_list():
     """
     # Create devices
     mockDevice = {
-        "i2c_addr": 0x10,
+        "i2c_addr": 0x11,
         0x00: Register(0xFF, 8, False),
         0x01: Register(0x00, 8, True)
     }
