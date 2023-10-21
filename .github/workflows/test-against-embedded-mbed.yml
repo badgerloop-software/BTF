@@ -1,0 +1,131 @@
+name: Test Against embedded-mbed
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  initialize-artifact:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/armmbed/mbed-os-env:mbed-os-6.15.1-latest
+
+    outputs:
+      # TODO branch-name: ${{ steps.parse-pr.outputs.branch-name }}
+      artifact-id: ${{ steps.initialize-artifact.outputs.artifact-id }}
+      new-artifact: ${{ steps.initialize-artifact.outputs.new-artifact }}
+      commit-hash: ${{ steps.initialize-artifact.outputs.commit-hash }}
+
+    steps:
+      - name: Parse PR Description
+        id: parse-pr
+        run: |
+          # Parse the PR description for the desired branch specified by the '\embedded-mbed-branch' tag. If unset, default to main
+          branch_name=$(echo "${{ github.event.pull_request.body }}" | { grep -oP '(\\embedded-mbed-branch\s*)\K\S+' 2>/dev/null || true; })
+          echo "branch-name=${branch_name:-main}" >> $GITHUB_OUTPUT
+
+      - name: Check if Artifact Exists
+        id: initialize-artifact
+        run: |
+          # Check if there is already an artifact with the parsed name (e.g. main-binary)
+          apt update 1>/dev/null  && apt install -y curl jq unzip 1>/dev/null
+          artifact=$(curl -L \
+                       -H "Accept: application/vnd.github+json" \
+                       -H "Authorization: Bearer ${{ github.token }}" \
+                       -H "X-GitHub-Api-Version: 2022-11-28" \
+                       https://api.github.com/repos/${{ github.repository }}/actions/artifacts?name=${{ steps.parse-pr.outputs.branch-name }}-binary)
+          echo "$artifact" | jq '.total_count' # TODO
+          if [ $(echo "$artifact" | jq '.total_count') -gt 0 ]
+          then
+            echo "new-artifact=true" >> $GITHUB_OUTPUT
+            artifact_id=$(echo "$artifact" | jq -r '.artifacts[0].id')
+          else
+            echo "new-artifact=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Download Artifact
+        if: steps.initialize-artifact.outputs.new-artifact == 'true'
+        run: |
+          curl -LO \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ github.token }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/${{ github.repository }}/actions/artifacts/${{ steps.initialize-artifact.outputs.new-artifact }}/zip
+          ls
+          unzip zip
+          # TODO
+
+  build-and-upload:
+    needs: initialize-artifact
+    if: false # TODO needs.initialize-artifact.outputs.branch-name != ''
+    runs-on: self-hosted
+
+    steps:
+      - name: Download Artifact
+        if: needs.initialize-artifact.outputs.new-artifact == 'false'
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ needs.initialize-artifact.outputs.branch-name }}
+          path: embedded-mbed
+
+      - name: Build and Upload Artifact
+        run: |
+          # Get most recent commit hash from the specified branch
+          # Example: git clone -b main git@github.com:badgerloop-software/embedded-mbed.git
+          #      git -C embedded-mbed show --no-patch --format=%H HEAD
+          commit_hash=$(git clone -b ${{ needs.initialize-artifact.outputs.branch-name }} git@github.com:badgerloop-software/embedded-mbed.git --depth=1 --quiet && git -C embedded-mbed show --no-patch --format=%H HEAD)
+          echo "commit-hash=$commit_hash" >> $GITHUB_OUTPUT
+
+          # Build the binary
+          # Example: make compile
+          # TODO Run make from the parent directory and put the binary there
+          make compile
+
+          # Move the binary to the top-level of embedded-mbed and rename it
+          # Example: mv embedded-mbed/build/STM32F446RETx_FLASH/embdedded-mbed.bin embedded-mbed/embedded-mbed_<commit>.bin
+          mv embedded-mbed/build/STM32F446RETx_FLASH/embedded-mbed.bin embedded-mbed/embedded-mbed_$commit_hash.bin
+
+          # Upload the new artifact
+          # Example: https://api.github.com/repos/<OWNER>/<REPO>/actions/artifacts
+          upload_url=$(curl -sSL -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/${{ github.repository }}/actions/artifacts" | jq -r '.upload_url')
+          upload_url=${upload_url%\{?name,label\}}
+          curl -sSL -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "X-GitHub-Api-Version: 2022-11-28" -X POST -H "Content-Type: application/zip" --data-binary "@embedded-mbed/embedded-mbed_$commit_hash.bin" "$upload_url?name=${{ needs.initialize-artifact.outputs.branch-name }}"
+
+          # Delete the old artifact
+          if [[ ${{ needs.initialize-artifact.outputs.new-artifact }} == 'false' ]]; then
+            # Example: https://api.github.com/repos/<OWNER>/<REPO>/actions/artifacts/<ARTIFACT_ID>
+            curl -sSL -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "X-GitHub-Api-Version: 2022-11-28" -X DELETE "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/${{ needs.initialize-artifact.outputs.artifact-id }}"
+          fi
+
+      - name: Save New Artifact Status
+        id: save-new-artifact-status
+        run: |
+          if [[ ${{ needs.initialize-artifact.outputs.new-artifact }} == 'true' ]]; then
+            echo "new-artifact=true" >> $GITHUB_OUTPUT
+          else
+            echo "new-artifact=false" >> $GITHUB_OUTPUT
+          fi
+
+  flash-and-run:
+    needs: build-and-upload
+    runs-on: self-hosted
+    if: false # TODO needs.build-and-upload.outputs.new-artifact == 'true'
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ needs.build-and-upload.outputs.branch-name }}
+          path: embedded-mbed
+
+      - name: Flash Binary to Nucleo
+        run: |
+          # Flash the downloaded binary to the Nucleo
+          # Example: st-flash write embedded-mbed/embedded-mbed_<commit>.bin 0x8000000
+          # TODO REMOVE THIS IS NOT WHAT WE USE TO FLASH
+          st-flash write embedded-mbed/embedded-mbed_${{ needs.build-and-upload.outputs.commit-hash }}.bin 0x8000000
+
+      - name: Run BTF
+        run: |
+          # Run the BTF
+          # Example: python btf.py
+          python btf.py
