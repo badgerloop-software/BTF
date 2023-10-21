@@ -1,4 +1,5 @@
 .vscode
 *.yaml
 *.yml
+!.github/workflows/*
 /**/__pycache__
