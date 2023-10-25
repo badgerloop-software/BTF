@@ -1,4 +1,5 @@
-"""This class represents a Register in a Device that can be written and read.
+"""
+This class represents a Register in a Device that can be written and read.
 """
 
 class Register(object):
@@ -20,13 +21,3 @@ class Register(object):
     def __str__(self):
         """Returns a string representation of this Register."""
         return f'Contents: {hex(self.data)}\nSize: {self.size} bits\n{"Read/Write" if self.can_write else "Read-only"}\n'
-
-
-# Debugging code
-if __name__ == "__main__":
-    r0 = Register(0xFF, 8, False)
-    r1 = Register(0x01, 8, False)
-    r2 = Register(0x03, 8, False)
-    r3 = Register(0x11, 8, False)
-    print(r0.data)
-    print(str(r2))

@@ -1,8 +1,11 @@
-# this file is a copy of serialtest.py from the old BTF repo. 
 import serial
-    
+
+"""
+Wrapper to facilitate communication with Nucleo over USB (UART)
+"""
+
 ser = serial.Serial()
-ser.port = "/dev/ttyACM0"
+ser.port = "/dev/ttyACM0"   # File for USB port
 ser.baudrate = 9600
 
 def openSerial():
