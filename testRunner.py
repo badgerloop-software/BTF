@@ -1,6 +1,7 @@
 import sys
 import time
 import yaml
+import importlib
 import serialWrapper
 
 serialWrapper.openSerial()
@@ -18,8 +19,35 @@ if __name__ == '__main__':
         if testCfg is None or setupCfg is None or list(setupCfg.keys())[0] != 'setup' or not all(e in list(setupCfg['setup'].keys()) for e in ['target', 'devices', 'drivers']) or list(testCfg.keys())[0] != setupCfg['setup']['target']:
             print('Improperly formatted configuration files')
             sys.exit(1)
-        print(testCfg)
-        print(setupCfg)
+        print(testCfg) # REMOVE
+        print(setupCfg) # REMOVE
+    
+	# TODO IMPLEMENT Add serial_basic test check here
+	
+	# Loop over tests, running each as they are specified by the UUT
+    target = setupCfg['setup']['target']
+    while True:
+        test = serialWrapper.readBytes(10)
+        if test[:10] == "START TEST":
+            # Get driver and test name from response
+            driver, test = test.split()[-1].split('_')
+            if testCfg[target][driver].keys().contains(test):
+                # Test exists in test config. Import and run test
+                module = importlib.import_module(f'{driver}.{test}')
+                testClass = getattr(module, test)
+                testInstance = testClass()
+                testInstance.setup()
+                testInstance.run()
+                testInstance.teardown()
+                testInstance.log() # TODO Record test log & result (compile into results summary table)
+            else:
+                # TODO Log error because test not found
+                pass
+        elif test == "END ALL TESTS" or test == "":
+            # TODO Update "END ALL TESTS" string
+            # Timed out or signalled to end all tests
+            break
+    
     
     print(f'Start tests in 5')
     for i in range(4):
